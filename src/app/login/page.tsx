@@ -19,13 +19,14 @@ import { useRouter } from "next/navigation";
 import DEForm from "@/components/Forms/DEForm";
 import DEInputField from "@/components/Forms/DEInputField";
 import { useState } from "react";
-import { z } from "zod";
+// import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { validationSchema } from "./validation";
 
-export const validationSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters "),
-});
+// export const validationSchema = z.object({
+//   email: z.string().email("Please enter a valid email"),
+//   password: z.string().min(6, "Password must be at least 6 characters "),
+// });
 
 const LoginPage = () => {
   const router = useRouter();

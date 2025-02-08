@@ -20,31 +20,32 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DEForm from "@/components/Forms/DEForm";
 import DEInputField from "@/components/Forms/DEInputField";
-import { z } from "zod";
+// import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { defaultValues, validationSchema } from "./validation";
 
-export const CompanyValidationSchema = z.object({
-  name: z.string().min(1, "Please enter your name!"),
-  email: z.string().email("Please enter a valid email!"),
-  contactNumber: z
-    .string()
-    .regex(/^\d{12}$/, "Please provide a valid phone number"),
-  address: z.string().min(1, "Please enter your address!"),
-});
-export const validationSchema = z.object({
-  password: z.string().min(6, "Password must be at least 6 characters "),
-  company: CompanyValidationSchema,
-});
+// export const CompanyValidationSchema = z.object({
+//   name: z.string().min(1, "Please enter your name!"),
+//   email: z.string().email("Please enter a valid email!"),
+//   contactNumber: z
+//     .string()
+//     .regex(/^\d{12}$/, "Please provide a valid phone number"),
+//   address: z.string().min(1, "Please enter your address!"),
+// });
+// export const validationSchema = z.object({
+//   password: z.string().min(6, "Password must be at least 6 characters "),
+//   company: CompanyValidationSchema,
+// });
 
-export const defaultValues = {
-  password: "",
-  company: {
-    name: "",
-    email: "",
-    contactNumber: "",
-    address: "",
-  },
-};
+// export const defaultValues = {
+//   password: "",
+//   company: {
+//     name: "",
+//     email: "",
+//     contactNumber: "",
+//     address: "",
+//   },
+// };
 
 const RegisterPage = () => {
   const router = useRouter();

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const modifyPayload = (formDataInput: any) => {
   const obj = { ...formDataInput };
   const data = JSON.stringify(obj);
