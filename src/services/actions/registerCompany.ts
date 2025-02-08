@@ -2,7 +2,7 @@
 
 export const registerCompany = async (formDataToServer: FormData) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/create-company`,
+    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/register-company`,
     {
       method: "POST",
       body: formDataToServer,
