@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -42,7 +43,7 @@ const DEInputField = ({
     <Controller
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState: { error } }) => (
         <FormControl {...field} fullWidth sx={{ m: 1 }} size="small">
           <InputLabel htmlFor={`outlined-adornment-${name}`}>
             {label}
@@ -51,9 +52,10 @@ const DEInputField = ({
             id={`outlined-adornment-${name}`}
             type={
               type === "password" ? (showPassword ? "text" : "password") : type
-            } // Ensure other fields are not affected
+            }
             label={label}
             required={required}
+            error={!!error?.message}
             {...register(name)}
             endAdornment={
               type === "password" ? (
@@ -70,6 +72,9 @@ const DEInputField = ({
               ) : null
             }
           />
+          {error?.message && (
+            <FormHelperText error>{error.message}</FormHelperText>
+          )}
         </FormControl>
       )}
     />

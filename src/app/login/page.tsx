@@ -19,10 +19,18 @@ import { useRouter } from "next/navigation";
 import DEForm from "@/components/Forms/DEForm";
 import DEInputField from "@/components/Forms/DEInputField";
 import { useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export const validationSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters "),
+});
 
 const LoginPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
@@ -34,6 +42,8 @@ const LoginPage = () => {
         toast.success(res.message);
         storeUserInfo({ accessToken: res?.data?.accessToken });
         router.push("/");
+      } else {
+        setError(res.message);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -75,21 +85,37 @@ const LoginPage = () => {
               </Typography>
             </Box>
           </Stack>
-          <DEForm onSubmit={handleLogin}>
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  backgroundColor: "red",
+                  padding: "1px",
+                  borderRadius: "2px",
+                  color: "white",
+                  marginTop: "5px",
+                }}
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
+          <DEForm
+            onSubmit={handleLogin}
+            resolver={zodResolver(validationSchema)}
+            defaultValues={{
+              email: "",
+              password: "",
+            }}
+          >
             <Grid2 container spacing={2} my={1}>
-              <DEInputField
-                label="Email"
-                type="text"
-                name="email"
-                required={true}
-              />
+              <DEInputField label="Email" type="text" name="email" />
               <DEInputField
                 label="Password"
                 type="password"
                 name="password"
                 showPassword={showPassword}
                 togglePassword={togglePasswordVisibility}
-                required={true}
               />
             </Grid2>
             <Typography

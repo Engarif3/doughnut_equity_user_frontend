@@ -20,10 +20,36 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DEForm from "@/components/Forms/DEForm";
 import DEInputField from "@/components/Forms/DEInputField";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export const CompanyValidationSchema = z.object({
+  name: z.string().min(1, "Please enter your name!"),
+  email: z.string().email("Please enter a valid email!"),
+  contactNumber: z
+    .string()
+    .regex(/^\d{12}$/, "Please provide a valid phone number"),
+  address: z.string().min(1, "Please enter your address!"),
+});
+export const validationSchema = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters "),
+  company: CompanyValidationSchema,
+});
+
+export const defaultValues = {
+  password: "",
+  company: {
+    name: "",
+    email: "",
+    contactNumber: "",
+    address: "",
+  },
+};
 
 const RegisterPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const handleRegister = async (formData: FieldValues) => {
     const data = modifyPayload(formData);
@@ -32,6 +58,8 @@ const RegisterPage = () => {
       if (res?.data?.id) {
         toast.success("Registration successful");
         router.push("/login");
+      } else {
+        setError(res.message);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -84,26 +112,34 @@ const RegisterPage = () => {
               </Typography>
             </Box>
           </Stack>
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  backgroundColor: "red",
+                  padding: "1px",
+                  borderRadius: "2px",
+                  color: "white",
+                  marginTop: "5px",
+                }}
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
           <Box>
-            <DEForm onSubmit={handleRegister}>
+            <DEForm
+              onSubmit={handleRegister}
+              resolver={zodResolver(validationSchema)}
+              defaultValues={defaultValues}
+            >
               <Grid2 container spacing={2} my={1}>
-                <DEInputField
-                  label="Name"
-                  type="text"
-                  name="company.name"
-                  required={true}
-                />
-                <DEInputField
-                  label="Email"
-                  type="email"
-                  name="company.email"
-                  required={true}
-                />
+                <DEInputField label="Name" type="text" name="company.name" />
+                <DEInputField label="Email" type="email" name="company.email" />
                 <DEInputField
                   label="Password"
                   type="password"
                   name="password"
-                  required={true}
                   showPassword={showPassword}
                   togglePassword={togglePasswordVisibility}
                 />
@@ -111,13 +147,11 @@ const RegisterPage = () => {
                   label="Contact Number"
                   type="text"
                   name="company.contactNumber"
-                  required={true}
                 />
                 <DEInputField
                   label="Address"
                   type="text"
                   name="company.address"
-                  required={true}
                 />
               </Grid2>
               <Button fullWidth type="submit">
